@@ -1,7 +1,11 @@
+const Collaboration = require('./Collaboration');
+const Project = require('./Project');
+const Task = require('./Task');
 const User = require('./User');
-const Task = require('./Task')
 
 module.exports = {
+  Collaboration,
+  Project,
   Task,
   User,
 };
