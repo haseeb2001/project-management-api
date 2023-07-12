@@ -116,7 +116,8 @@ const TaskController = {
     const { id } = req.params;
     const { title, description, dueDate, priority, projectId } = req.body;
     let updatedAttr = {};
-    taskAttr.userId = req.user.id;
+    const userId = req.user.id;
+    updatedAttr.userId = userId;
     updatedAttr = {
       ...updatedAttr,
       title,

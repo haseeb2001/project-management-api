@@ -22,6 +22,6 @@ router
   .post([validateToken], updateProject)
   .get(validateToken, getProjectById)
   .delete(validateToken, deleteProject);
-router.get('/:id/collabs', validateToken, getProjectCollabs);
+router.get('/:projectId/collabs', validateToken, getProjectCollabs);
 
 module.exports = router;
