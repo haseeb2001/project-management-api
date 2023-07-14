@@ -87,7 +87,8 @@ const TaskController = {
     }
   },
   createTask: async (req, res) => {
-    const { title, description, dueDate, priority, projectId } = req.body;
+    const { title, description, dueDate, priority, projectId, status } =
+      req.body;
     let taskAttr = {};
 
     taskAttr.userId = req.user.id;
@@ -98,6 +99,7 @@ const TaskController = {
       description,
       dueDate,
       priority,
+      status,
       projectId,
     };
     try {

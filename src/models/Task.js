@@ -15,6 +15,11 @@ const taskSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  status: {
+    type: String,
+    enum: ['Created','Assigned', 'In Progress', 'Completed'],
+    default: 'Created',
+  },
   priority: {
     type: Number,
     min: 0,
@@ -23,13 +28,21 @@ const taskSchema = new mongoose.Schema({
   },
   isCompleted: {
     type: Boolean,
-    default: false
+    default: false,
   },
   userId: {
     type: ObjectID,
     ref: 'User',
     required: true,
   },
+  assigned_to: [
+    {
+      type: ObjectID,
+      ref: 'User',
+      required: true,
+    },
+  ],
+
   projectId: {
     type: ObjectID,
     ref: 'Project',
