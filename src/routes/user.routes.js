@@ -4,8 +4,9 @@ const router = express.Router();
 const {
   login,
   signup,
-  fetchUser,
   deleteUser,
+  fetchAllUsers,
+  fetchUser,
 } = require('../controllers/user.controller');
 const validateToken = require('../middlewares/auth/authToken');
 const {
@@ -13,6 +14,8 @@ const {
   validateLogin,
 } = require('../middlewares/validators/userValidator');
 
+router.get('/all', fetchAllUsers);
+router.get('/fetchUser', validateToken, fetchUser);
 router.post('/login', validateLogin, login);
 router.post('/signup', validateUser, signup);
 router.delete('/', validateToken, deleteUser);
