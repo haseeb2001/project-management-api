@@ -37,11 +37,26 @@ const UserController = {
 
   fetchUser: async (req, res) => {
     try {
+      console.log(req.user.id);
       const user = await User.findById(req.user.id).select('-password');
 
       if (!user) return notFoundResponse(res, 'User not found');
 
       return sendSuccessResponse(res, { user }, 'User fetched successfully');
+    } catch (error) {
+      console.log('error: ', error);
+
+      return serverResponse(res, error.message, 'Internal Server Error');
+    }
+  },
+
+  fetchAllUsers: async (req, res) => {
+    try {
+      const users = await User.find().select('-password');
+
+      if (!users) return notFoundResponse(res, 'Users not found');
+
+      return sendSuccessResponse(res, { users }, 'Users fetched successfully');
     } catch (error) {
       console.log('error: ', error);
 

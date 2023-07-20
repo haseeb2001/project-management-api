@@ -54,7 +54,8 @@ const TaskController = {
         userId,
       })
         .populate('userId', 'username')
-        .populate('projectId', 'name');
+        .populate('projectId', 'name')
+        .populate('assigned_to', 'username');
 
       if (tasks.length === 0) return notFoundResponse(res, 'Tasks not found');
 
@@ -87,8 +88,15 @@ const TaskController = {
     }
   },
   createTask: async (req, res) => {
-    const { title, description, dueDate, priority, projectId, status } =
-      req.body;
+    const {
+      title,
+      description,
+      dueDate,
+      priority,
+      projectId,
+      status,
+      assigned_to,
+    } = req.body;
     let taskAttr = {};
 
     taskAttr.userId = req.user.id;
@@ -101,11 +109,23 @@ const TaskController = {
       priority,
       status,
       projectId,
+      assigned_to,
     };
+
     try {
+      if (assigned_to && assigned_to.length > 0 && !status) {
+        taskAttr = {
+          ...taskAttr,
+          status: 'Assigned',
+        };
+      }
       const task = new Task(taskAttr);
 
       await task.save();
+      await task
+        .populate('userId', 'username')
+        .populate('projectId', 'name')
+        .populate('assigned_to', 'username');
 
       return sendSuccessResponse(res, { task }, 'Task created successfully');
     } catch (error) {
@@ -116,7 +136,15 @@ const TaskController = {
   },
   updateTask: async (req, res) => {
     const { id } = req.params;
-    const { title, description, dueDate, priority, projectId } = req.body;
+    const {
+      title,
+      description,
+      dueDate,
+      priority,
+      projectId,
+      status,
+      assigned_to,
+    } = req.body;
     let updatedAttr = {};
     const userId = req.user.id;
     updatedAttr.userId = userId;
@@ -127,14 +155,25 @@ const TaskController = {
       dueDate,
       priority,
       projectId,
+      status,
+      assigned_to,
     };
 
     try {
+      if (status === 'Created') {
+        updatedAttr = {
+          ...updatedAttr,
+          assigned_to: [],
+        };
+      }
       const task = await Task.findOneAndUpdate(
         { _id: id, userId },
         { $set: updatedAttr },
         { new: true }
-      );
+      )
+        .populate('userId', 'username')
+        .populate('projectId', 'name')
+        .populate('assigned_to', 'username');
 
       return sendUpdateResponse(res, { task }, 'Task updated successfully');
     } catch (error) {
